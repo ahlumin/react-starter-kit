@@ -40,11 +40,13 @@ export default function App({ context, insertCss, children }) {
   // NOTE: If you need to add or modify header, footer etc. of the app,
   // please do that inside the Layout component.
   return (
-    <StyleContext.Provider value={{ insertCss }}>
-      <ApplicationContext.Provider value={{ context }}>
-        {React.Children.only(children)}
-      </ApplicationContext.Provider>
-    </StyleContext.Provider>
+    <ReduxProvider store={context.store}>
+      <StyleContext.Provider value={{ insertCss }}>
+        <ApplicationContext.Provider value={{ context }}>
+          {React.Children.only(children)}
+        </ApplicationContext.Provider>
+      </StyleContext.Provider>
+    </ReduxProvider>
   );
 }
 
@@ -57,9 +59,7 @@ App.propTypes = {
     fetch: PropTypes.func.isRequired,
     pathname: PropTypes.string.isRequired,
     query: PropTypes.object,
-    // Integrate Redux
-    // http://redux.js.org/docs/basics/UsageWithReact.html
-    ...ReduxProvider.childContextTypes,
+    store: PropTypes.object.isRequired,
   }).isRequired,
   children: PropTypes.element.isRequired,
 };

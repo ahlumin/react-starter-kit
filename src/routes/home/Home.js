@@ -7,13 +7,15 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+import { connect } from 'react-redux';
 import useStyles from 'isomorphic-style-loader/useStyles';
 import React from 'react';
 import PropTypes from 'prop-types';
 import s from './Home.css';
 
-export default function Home({ news }) {
+function Home({ news }) {
   useStyles(s);
+
   return (
     <div className={s.root}>
       <div className={s.container}>
@@ -44,3 +46,5 @@ Home.propTypes = {
     }),
   ).isRequired,
 };
+
+export default connect(state => ({ ...state }))(Home);

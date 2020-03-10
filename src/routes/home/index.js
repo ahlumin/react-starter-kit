@@ -11,7 +11,7 @@ import React from 'react';
 import Home from './Home';
 import Layout from '../../components/Layout';
 
-async function action({ fetch }) {
+async function action({ fetch /** , store */ }) {
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
       query: '{news{title,link,content}}',
@@ -19,6 +19,18 @@ async function action({ fetch }) {
   });
   const { data } = await resp.json();
   if (!data || !data.news) throw new Error('Failed to load the news feed.');
+
+  /**
+   * pre-fetch data on server-side here.
+   *
+   * e.g.
+   * const { user } = store.getState();
+   * if (!user) {
+   *   await store.runSagas(fetchUserSaga).toPromise();
+   * }
+   *
+   */
+
   return {
     title: 'React Starter Kit',
     chunks: ['home'],

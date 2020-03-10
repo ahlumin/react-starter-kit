@@ -1,14 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+// import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { name, version } from '../../package.json';
 import rootReducer from '../reducers';
 import createHelpers from './createHelpers';
 import createLogger from './logger';
 
+import rootSaga from '../sagas';
+
 export default function configureStore(initialState, helpersConfig) {
   const helpers = createHelpers(helpersConfig);
-  const middleware = [thunk.withExtraArgument(helpers)];
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware = [sagaMiddleware];
 
   let enhancer;
 
@@ -38,5 +42,7 @@ export default function configureStore(initialState, helpersConfig) {
     );
   }
 
+  sagaMiddleware.run(rootSaga, helpers);
+  store.runSagas = sagaMiddleware.run;
   return store;
 }
