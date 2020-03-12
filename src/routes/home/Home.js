@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import useStyles from 'isomorphic-style-loader/useStyles';
 import React from 'react';
 import PropTypes from 'prop-types';
-import s from './Home.css';
+import s from './Home.scss';
 
 function Home({ news }) {
   useStyles(s);
