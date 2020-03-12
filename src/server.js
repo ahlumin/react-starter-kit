@@ -18,6 +18,7 @@ import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
+import { createMemoryHistory } from 'history';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -108,6 +109,8 @@ app.get('*', async (req, res, next) => {
       styles.forEach(style => css.add(style._getCss()));
     };
 
+    const history = createMemoryHistory({ initialEntries: [req.path] });
+
     // Universal HTTP client
     const fetch = createFetch(nodeFetch, {
       baseUrl: config.api.serverUrl,
@@ -122,6 +125,7 @@ app.get('*', async (req, res, next) => {
 
     const store = configureStore(initialState, {
       fetch,
+      history,
       // I should not use `history` on server.. but how I do redirection? follow universal-router
     });
 
