@@ -59,6 +59,10 @@ const config = {
   resolve: {
     // Allow absolute paths in imports, e.g. import Button from 'components/Button'
     // Keep in sync with .flowconfig and .eslintrc
+    alias: {
+      '@src': SRC_DIR,
+    },
+    extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
     modules: ['node_modules', 'src'],
   },
 
