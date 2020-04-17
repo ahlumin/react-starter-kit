@@ -23,6 +23,8 @@ const BUILD_DIR = resolvePath('build');
 
 const isDebug = !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose');
+const isUAT = process.argv.includes('--uat');
+
 const isAnalyze =
   process.argv.includes('--analyze') || process.argv.includes('--analyse');
 
@@ -306,6 +308,7 @@ const clientConfig = {
     new webpack.DefinePlugin({
       'process.env.BROWSER': true,
       __DEV__: isDebug,
+      __UAT__: isUAT,
     }),
 
     // Emit a file with assets paths
@@ -469,6 +472,7 @@ const serverConfig = {
     new webpack.DefinePlugin({
       'process.env.BROWSER': false,
       __DEV__: isDebug,
+      __UAT__: isUAT,
     }),
 
     // Adds a banner to the top of each generated chunk
