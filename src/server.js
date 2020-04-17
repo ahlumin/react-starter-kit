@@ -19,6 +19,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import { createMemoryHistory } from 'history';
+import i18nextMiddleware from 'i18next-express-middleware';
+import { I18nextProvider } from 'react-i18next';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -31,6 +33,7 @@ import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unr
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
+import i18next from './i18next/server';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -56,6 +59,7 @@ app.set('trust proxy', config.trustProxy);
 //
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
+app.use(i18nextMiddleware.handle(i18next));
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -94,6 +98,8 @@ app.use(
     pretty: __DEV__,
   })),
 );
+// TODO: move to nginx settings
+app.use('/i18n', express.static(path.resolve(__dirname, '../i18n')));
 
 //
 // Register server-side rendering middleware
@@ -157,9 +163,11 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <App context={context} insertCss={insertCss}>
-        {route.component}
-      </App>,
+      <I18nextProvider i18n={req.i18n}>
+        <App context={context} insertCss={insertCss}>
+          {route.component}
+        </App>
+      </I18nextProvider>,
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
 
@@ -175,10 +183,17 @@ app.get('*', async (req, res, next) => {
     if (route.chunk) addChunk(route.chunk);
     if (route.chunks) route.chunks.forEach(addChunk);
 
+    const initialI18nStore = {};
+    req.i18n.languages.forEach(l => {
+      initialI18nStore[l] = req.i18n.store.data[l] || {};
+    });
+
     data.scripts = Array.from(scripts);
     data.app = {
       apiUrl: config.api.clientUrl,
       state: context.store.getState(),
+      initialI18nStore,
+      initialLanguage: req.i18n.language,
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);

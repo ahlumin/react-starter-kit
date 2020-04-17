@@ -8,19 +8,20 @@
  */
 
 /* eslint-disable max-len */
+const env = require('./env');
 
-if (process.env.BROWSER) {
-  throw new Error(
-    'Do not import `config.js` from inside the client-side code.',
-  );
+function checkSecret(value) {
+  if (process.env.BROWSER) return '';
+  return value;
 }
 
 module.exports = {
+  ...env,
   // Node.js app
-  port: process.env.PORT || 3000,
+  port: checkSecret(process.env.PORT || 3000),
 
   // https://expressjs.com/en/guide/behind-proxies.html
-  trustProxy: process.env.TRUST_PROXY || 'loopback',
+  trustProxy: checkSecret(process.env.TRUST_PROXY || 'loopback'),
 
   // API Gateway
   api: {
@@ -33,7 +34,9 @@ module.exports = {
   },
 
   // Database
-  databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
+  databaseUrl: checkSecret(
+    process.env.DATABASE_URL || 'sqlite:database.sqlite',
+  ),
 
   // Web analytics
   analytics: {

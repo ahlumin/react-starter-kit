@@ -13,12 +13,15 @@ import ReactDOM from 'react-dom';
 import deepForceUpdate from 'react-deep-force-update';
 import queryString from 'query-string';
 import { createPath } from 'history';
+import { useSSR } from 'react-i18next';
+import LANGUAGES from './i18next/languages';
 import App from './components/App';
 import createFetch from './createFetch';
 import configureStore from './store/configureStore';
 import history from './history';
 import { updateMeta } from './DOMUtils';
 import router from './router';
+import './i18next/client';
 
 // Enables critical path CSS rendering
 // https://github.com/kriasoft/isomorphic-style-loader
@@ -41,6 +44,15 @@ const context = {
   // http://redux.js.org/docs/basics/UsageWithReact.html
   store: configureStore(window.App.state, { history }),
   storeSubscription: null,
+};
+
+// eslint-disable-next-line react/prop-types
+const BaseApp = ({ children, ...prop }) => {
+  useSSR(
+    window.App.initialI18nStore,
+    LANGUAGES.checkLanguage(window.App.initialLanguage),
+  );
+  return <App {...prop}>{children}</App>;
 };
 
 const container = document.getElementById('app');
@@ -84,9 +96,9 @@ async function onLocationChange(location, action) {
 
     const renderReactApp = isInitialRender ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
-      <App context={context} insertCss={insertCss}>
+      <BaseApp context={context} insertCss={insertCss}>
         {route.component}
-      </App>,
+      </BaseApp>,
       container,
       () => {
         if (isInitialRender) {
