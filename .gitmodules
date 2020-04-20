@@ -1,0 +1,4 @@
+[submodule "@snapask"]
+	path = @snapask
+	url = https://github.com/SnapaskProduct/snapask-common-components.git
+	branch = master
