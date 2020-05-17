@@ -20,7 +20,7 @@ export default {
    * document client: https://github.com/i18next/i18next-browser-languageDetector#detector-options
    */
   detection: {
-    order: ['path', 'querystring', 'localStorage', 'cookie'],
+    order: ['querystring', 'localStorage', 'cookie'],
     lookupCookie: 'userLng',
     lookupQuerystring: 'lang',
 

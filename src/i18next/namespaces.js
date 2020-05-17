@@ -4,15 +4,4 @@
  * Should be defined all namespaces here, or it will show the latency text-changed on client-side.
  */
 
-export default [
-  'account',
-  'addon',
-  'app',
-  'coconut',
-  'common',
-  'confirmEmail',
-  'contact',
-  'deleteAccount',
-  'error',
-  'lemon',
-];
+export default ['common', 'account'];

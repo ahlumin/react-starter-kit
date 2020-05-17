@@ -7,7 +7,7 @@ import commonOptions from './options';
 
 const options = {
   backend: {
-    loadPath: '/i18n/{{lng}}/{{ns}}.json',
+    loadPath: '/i18n/{{lng}}/i18n/{{ns}}.json',
   },
   ...commonOptions,
 };
