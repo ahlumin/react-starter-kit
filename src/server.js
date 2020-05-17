@@ -119,7 +119,7 @@ app.get('*', async (req, res, next) => {
 
     // Universal HTTP client
     const fetch = createFetch(nodeFetch, {
-      baseUrl: config.api.serverUrl,
+      baseUrl: config.ApiURL,
       cookie: req.headers.cookie,
       schema,
       graphql,
@@ -190,7 +190,7 @@ app.get('*', async (req, res, next) => {
 
     data.scripts = Array.from(scripts);
     data.app = {
-      apiUrl: config.api.clientUrl,
+      apiUrl: config.ApiURL,
       state: context.store.getState(),
       initialI18nStore,
       initialLanguage: req.i18n.language,
